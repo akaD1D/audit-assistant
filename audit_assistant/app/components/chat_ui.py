@@ -62,13 +62,17 @@ def render_chat(container) -> None:
     st.subheader("💬 Ask the audit assistant")
 
     kb_count = container.document_repository.count()
+    # If the user has uploaded something this session, focus on it by default —
+    # otherwise a fresh invoice gets drowned out by the whole knowledge base.
+    default_index = 1 if st.session_state.get("documents") else 0
     scope = st.radio(
         "Answer from",
         ["📚 Entire knowledge base", "📎 Only this session's uploads"],
+        index=default_index,
         horizontal=True,
         key="chat_scope",
-        help="The knowledge base is every document ever ingested — it persists across "
-        "sessions (e.g. bulk-loaded standards and company reports).",
+        help="Uploaded a file to ask about? Use 'this session's uploads' so the answer "
+        "comes from it, not the whole library.",
     )
     st.caption(f"📚 Knowledge base: {kb_count} document(s) indexed.")
 

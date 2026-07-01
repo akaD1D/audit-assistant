@@ -105,10 +105,25 @@ class Container:
         return TesseractOcr(self.settings.tesseract_cmd or None)
 
     @cached_property
+    def vision_provider(self):
+        """A vision-capable provider for reading images.
+
+        Ollama text models can't see images, so use a dedicated vision model.
+        Cloud providers (Gemini/OpenAI/Anthropic) do vision with their main model.
+        """
+        if self.settings.llm_provider == "ollama":
+            from audit_assistant.infrastructure.llm.ollama_provider import OllamaProvider
+
+            return OllamaProvider(
+                self.settings.ollama_base_url, self.settings.ollama_vision_model
+            )
+        return self.llm_provider
+
+    @cached_property
     def image_service(self):
         from audit_assistant.services.image_service import ImageUnderstandingService
 
-        return ImageUnderstandingService(llm=self.llm_provider, ocr=self.ocr)
+        return ImageUnderstandingService(llm=self.vision_provider, ocr=self.ocr)
 
     @cached_property
     def ingestion_service(self):

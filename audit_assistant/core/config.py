@@ -57,6 +57,7 @@ class Settings(BaseSettings):
 
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3.1"
+    ollama_vision_model: str = "minicpm-v"  # separate vision model for images
 
     # Optional path to the Tesseract binary (offline OCR fallback). Empty = auto.
     tesseract_cmd: str = ""
