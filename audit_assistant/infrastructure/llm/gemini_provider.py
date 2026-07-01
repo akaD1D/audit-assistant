@@ -94,6 +94,12 @@ class GeminiProvider:
         except ProviderNotConfiguredError:
             raise
         except Exception as exc:  # noqa: BLE001
+            if _is_rate_limit(exc):
+                raise LLMError(
+                    "Gemini free-tier quota reached. Wait a minute and retry — or the "
+                    "daily free limit may be used up (it resets each day). Tip: switch to "
+                    "gemini-2.5-flash-lite (more generous free tier) or use a fresh API key."
+                ) from exc
             raise LLMError(f"Gemini streaming failed: {exc}") from exc
 
     def complete_with_images(
