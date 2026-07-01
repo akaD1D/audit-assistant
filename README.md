@@ -1,5 +1,10 @@
 # 🧾 AI Audit Assistant
 
+![Python](https://img.shields.io/badge/python-3.12-blue)
+![Streamlit](https://img.shields.io/badge/UI-Streamlit-FF4B4B)
+![Tests](https://img.shields.io/badge/tests-78%20passing-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 A document-aware AI assistant for auditing work. Upload PDFs, Excel/CSV, Word,
 images, and text; ask questions answered **from your documents** with citations
 and a confidence level; run **deterministic audit calculations**; validate
