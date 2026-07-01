@@ -17,16 +17,26 @@ Define secrets in the app dashboard, e.g.:
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 
 def _bridge_secrets_to_env() -> None:
+    # Only touch st.secrets if a secrets file actually exists. Accessing it when
+    # absent emits a "No secrets found" message, which would run BEFORE
+    # set_page_config() and break Streamlit's "first command" rule.
+    candidates = [
+        Path.home() / ".streamlit" / "secrets.toml",
+        Path(".streamlit") / "secrets.toml",
+    ]
+    if not any(p.exists() for p in candidates):
+        return
     try:
         import streamlit as st
 
         for key, value in st.secrets.items():
             if isinstance(value, str):
                 os.environ.setdefault(key, value)
-    except Exception:  # noqa: BLE001 - no secrets file locally is fine
+    except Exception:  # noqa: BLE001 - defensive: never block startup on secrets
         pass
 
 
