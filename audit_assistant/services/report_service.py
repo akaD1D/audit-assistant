@@ -58,6 +58,7 @@ class ReportService:
         *,
         title: str | None = None,
         document_ids: list[str] | None = None,
+        language: str = "English",
     ) -> Report:
         query, outline = REPORT_TYPES.get(report_type, ("summary", ["Summary"]))
         contexts = self._rag.retrieve(query, top_k=self._top_k, document_ids=document_ids)
@@ -70,11 +71,19 @@ class ReportService:
         ) or "(No document context retrieved.)"
 
         outline_text = "\n".join(f"## {h}" for h in outline)
+        lang_note = (
+            f"Write the ENTIRE report in {language} (professional audit {language}), "
+            "translating the section headings into that language. Keep figures, currency "
+            "amounts, and standard codes (IFRS 15, ISA 320) as-is."
+            if language.lower() != "english"
+            else "Write the report in English."
+        )
         prompt = (
             f"Write a professional **{report_type}** for an auditor, using ONLY the context "
             f"below. Ground every figure and statement in the sources and cite them as "
             f"[Source N]. If the context lacks something, say so rather than inventing it.\n\n"
-            f"Use exactly these Markdown section headings:\n{outline_text}\n\n"
+            f"{lang_note}\n\n"
+            f"Use these section topics as Markdown '## ' headings:\n{outline_text}\n\n"
             f"CONTEXT:\n{source_block}"
         )
 

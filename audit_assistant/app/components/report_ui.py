@@ -24,7 +24,9 @@ def render_reports(container) -> None:
         st.warning("Report drafting needs an LLM provider — add a Gemini key to `.env`.")
         return
 
-    report_type = st.selectbox("Report type", list(REPORT_TYPES.keys()))
+    col_type, col_lang = st.columns([2, 1])
+    report_type = col_type.selectbox("Report type", list(REPORT_TYPES.keys()))
+    language = col_lang.selectbox("Language", ["English", "Arabic"])
     title = st.text_input("Report title", value=report_type)
     labels = {f"{d.filename} ({did[:6]})": did for did, d in docs.items()}
     chosen = st.multiselect(
@@ -36,7 +38,7 @@ def render_reports(container) -> None:
         with st.spinner("Drafting report from your documents…"):
             try:
                 report = container.report_service.generate(
-                    report_type, title=title, document_ids=doc_ids
+                    report_type, title=title, document_ids=doc_ids, language=language
                 )
             except LLMError as exc:
                 st.error(f"Report generation failed: {exc}")

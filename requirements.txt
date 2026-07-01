@@ -40,4 +40,6 @@ scipy==1.15.0
 
 # --- Phase 8: report export -------------------------------------------------
 fpdf2==2.8.2                   # PDF generation (pure python, Windows-friendly)
+arabic-reshaper==3.0.0         # Arabic letter shaping for PDF
+python-bidi==0.6.3             # bidirectional (RTL) reordering for PDF
 # python-docx / openpyxl (already above) handle Word / Excel export

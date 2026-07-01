@@ -21,7 +21,7 @@ from audit_assistant.services.rag_service import RagService
 
 log = get_logger(__name__)
 
-_CONFIDENCE_RE = re.compile(r"confidence:\s*(high|medium|low)", re.IGNORECASE)
+_CONFIDENCE_RE = re.compile(r"(?:confidence|الثقة)\s*[:：]?\s*(high|medium|low)", re.IGNORECASE)
 
 
 class ChatService:
