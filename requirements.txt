@@ -16,7 +16,7 @@ python-docx==1.1.2         # Word
 openpyxl==3.1.5            # Excel .xlsx
 xlrd==2.0.1               # Excel legacy .xls
 pandas==2.2.3             # tabular handling
-Pillow==11.1.0           # images
+Pillow==10.4.0           # images (10.3<=x<11 required by fastembed)
 python-magic-bin==0.4.14 ; sys_platform == "win32"   # MIME sniffing on Windows
 
 # --- Phase 2: RAG core ------------------------------------------------------
