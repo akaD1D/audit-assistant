@@ -1,0 +1,17 @@
+COSO — Internal Control Integrated Framework & ERM
+Source: Wikipedia (CC BY-SA), summary for reference/education.
+
+## Overview
+The Committee of Sponsoring Organizations of the Treadway Commission (COSO), founded 1985, published the Internal Control – Integrated Framework in 1992 (updated 2013).
+
+## Five Components of Internal Control
+1. Control Environment — organizational culture and tone: integrity, ethical values, management's operating style, delegation of authority, people management.
+2. Risk Assessment — identify and analyze risks to objectives; set clear goals; consider fraud potential; monitor changes.
+3. Control Activities — policies and procedures (approvals, authorizations, verifications, reconciliations, segregation of duties) that ensure directives are executed and risks addressed.
+4. Information and Communication — systems producing operational, financial, and compliance reports; communication throughout the entity, including fraud-reporting procedures.
+5. Monitoring — evaluating performance over time via ongoing activities or separate assessments; deficiencies reported and corrected promptly.
+
+## Enterprise Risk Management (ERM, 2004) — eight components
+Internal environment, objective setting, event identification, risk assessment, risk response, control activities, information/communication, monitoring — aligned to strategic, operational, reporting, and compliance objectives.
+
+Inherent limitations: human error and management override.

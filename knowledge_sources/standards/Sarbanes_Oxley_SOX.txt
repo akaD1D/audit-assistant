@@ -1,0 +1,14 @@
+Sarbanes–Oxley Act (SOX) of 2002
+Source: Wikipedia (CC BY-SA), summary for reference/education.
+
+## Purpose and Context
+Enacted 30 July 2002 in response to corporate scandals (Enron, WorldCom). Mandates practices in financial record keeping and reporting for public companies. Created the Public Company Accounting Oversight Board (PCAOB) to oversee audit firms. Comprises eleven titles.
+
+## Section 302: Disclosure Controls
+Principal officers (CEO and CFO) must certify the accuracy of financial reports quarterly, establish and maintain disclosure controls ensuring material information is made known to them, and evaluate control effectiveness.
+
+## Section 404: Internal Control over Financial Reporting (ICFR)
+Requires management to produce an internal control report affirming responsibility for establishing and maintaining adequate ICFR, and to assess its design and operating effectiveness (understand transaction flows, identify misstatement risks, evaluate entity-level controls, perform fraud risk assessment). The external auditor attests to ICFR for larger issuers. Section 404 is the most costly/contentious provision.
+
+## Compliance Costs
+Vary by size; disproportionately burden smaller companies. Automation of controls reduces manual evaluation costs.

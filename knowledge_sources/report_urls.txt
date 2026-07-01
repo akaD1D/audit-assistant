@@ -1,0 +1,13 @@
+# Public Saudi company report PDF URLs to download into the knowledge base.
+# One per line. Optional "|filename.pdf" to set a friendly name.
+# Add your own lines and re-run: python scripts/download_sources.py
+# Lines starting with # are ignored.
+
+# Aramco's server throttles large downloads (timed out even at 7 min). To add
+# them, download manually in a browser and drop the PDFs into reports/, then run
+# scripts/ingest_folder.py "knowledge_sources\reports".
+# https://www.aramco.com/-/media/publications/corporate-reports/reports-and-presentations/2023/fy/saudi-aramco-fy-2023-full-financials-english.pdf|Aramco_2023_Financial_Statements.pdf
+# https://www.aramco.com/-/media/publications/corporate-reports/annual-reports/saudi-aramco-ara-2023-english.pdf|Aramco_2023_Annual_Report.pdf
+https://www.sabic.com/en/Images/SABIC-Integrated-Annual-Report-2023-EN_tcm1010-42927.pdf|SABIC_2023_Integrated_Annual_Report.pdf
+https://www.stc.com.sa/content/dam/stc/stc-annual-report-2023/assets/img/pdfs/stc_AR2023_English.pdf|STC_2023_Annual_Report.pdf
+https://argaamplus.s3.amazonaws.com/660dc9f6-1ace-4260-8280-a650ae88ce6e.pdf|AlRajhi_2023_Financial_Statements.pdf

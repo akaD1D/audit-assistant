@@ -1,0 +1,19 @@
+International Standards on Auditing (ISA) — Overview
+Source: Wikipedia (CC BY-SA), summary for reference/education.
+
+## Definition and Issuance
+ISAs are professional standards for the auditing of financial information, issued by the International Auditing and Assurance Standards Board (IAASB), which operates under the International Federation of Accountants (IFAC).
+
+## Coverage Areas
+- Auditor responsibilities and audit planning
+- Internal control evaluation
+- Audit evidence collection
+- Using the work of experts
+- Audit conclusions and reporting
+- Specialized audit areas
+
+## Global Application
+EU: The Audit Directive (May 2006) mandates ISA application for statutory audits across member states. The European Court of Auditors and the UN Board of Auditors apply/adopt ISAs.
+
+## Structure
+IFAC/IAASB maintain the authoritative standards listing. ISAs are numbered (e.g. ISA 200 overall objectives; ISA 315 risk assessment; ISA 320 materiality; ISA 330 responses to risk; ISA 500 audit evidence; ISA 530 audit sampling; ISA 700 forming an opinion and reporting).

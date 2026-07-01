@@ -1,0 +1,26 @@
+IAS 1 — Presentation of Financial Statements
+Source: Wikipedia (CC BY-SA), summary for reference/education.
+
+## Overview and Objective
+IAS 1 establishes guidelines for presenting general-purpose financial statements under IFRS. Purpose: to provide useful information on the financial position, financial performance, and cash flows of an entity.
+
+## Complete Set of Financial Statements
+Categorizes information into: assets and liabilities; income and expenses; owner contributions and distributions; cash flows. A complete set includes the statement of financial position and the statement of comprehensive income (plus changes in equity, cash flows, and notes).
+
+## General Features
+1. Fair presentation and IFRS compliance.
+2. Going concern basis.
+3. Accrual accounting.
+4. Materiality — material classes of items presented separately.
+5. No offsetting of assets and liabilities.
+6. Frequency — at least annually.
+7. Consistency and comparative (prior-period) information.
+
+## Structure and Content
+Specifies minimum line items and classification rules, including:
+- Separate current vs non-current liabilities and assets.
+- Clear current/non-current classification criteria.
+- Comprehensive notes, disclosure of accounting policies and assumptions.
+
+## History
+Issued 1997 by the IASC; adopted by the IASB in 2001; significantly amended, most recently 2011.

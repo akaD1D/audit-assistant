@@ -1,0 +1,16 @@
+# Streamlit runtime configuration.
+# Telemetry disabled — audit data should never leave the machine implicitly.
+
+[browser]
+gatherUsageStats = false
+
+[server]
+maxUploadSize = 50   # MB — keep in sync with AUDIT_MAX_UPLOAD_MB
+
+[theme]
+base = "light"
+primaryColor = "#2563EB"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F7FB"
+textColor = "#1F2937"
+font = "sans serif"

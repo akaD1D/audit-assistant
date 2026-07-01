@@ -1,0 +1,29 @@
+IFRS 9 — Financial Instruments
+Source: Wikipedia (CC BY-SA), summary for reference/education.
+
+## Objective and Scope
+IFRS 9 addresses the accounting for financial instruments. Issued by the IASB, it replaced IAS 39 and became effective 1 January 2018. It covers three areas: classification and measurement, impairment of financial assets, and hedge accounting.
+
+## Development History
+Developed with the FASB after the 2008 financial crisis. IASB developed it in phases 2009–2014; final consolidated version released 24 July 2014.
+
+## Classification and Measurement
+Financial Assets — classification depends on two tests:
+1. Contractual Cash Flow Test (SPPI): cash flows must be "solely payments of principal and interest" to qualify for amortized cost or FVOCI.
+2. Business Model Assessment:
+   - Amortized Cost: held to collect contractual cash flows.
+   - FVOCI: held to collect and to sell.
+   - FVPL: all others, including trading assets and most derivatives.
+Financial Liabilities — mostly amortized cost, except under the fair value option, where changes due to the entity's own credit risk go to other comprehensive income.
+
+## Impairment Model (Expected Credit Loss)
+- 12-Month Initial Allowance: on acquisition, impairment equals expected credit losses for next 12 months.
+- Significant Increase in Credit Risk (SICR): triggers lifetime loss measurement.
+- Credit-impaired-on-acquisition assets: measured using full lifetime losses.
+- Recognizes projected lifetime losses faster than the previous incurred-loss model. Contrasts with FASB's CECL (full lifetime recognition immediately).
+
+## Hedge Accounting
+Aligns accounting with risk management activities: expanded eligibility for non-financial entities, relaxed effectiveness testing, enhanced disclosures, more flexibility for hedging components and groups.
+
+## Effective Date
+Mandatory 1 January 2018 (transition from IAS 39).

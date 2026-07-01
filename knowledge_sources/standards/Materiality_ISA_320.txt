@@ -1,0 +1,28 @@
+Materiality in Auditing (ISA 320)
+Source: Wikipedia (CC BY-SA), summary for reference/education.
+
+## Definition
+Materiality concerns the importance/significance of an amount, transaction, or discrepancy. The auditor opines on whether financial statements are prepared, in all material respects, in conformity with the applicable framework (GAAP/IFRS).
+IASB definition (effective 1 Jan 2020): "Information is material if omitting, misstating or obscuring it could reasonably be expected to influence the decisions that the primary users of general purpose financial statements make."
+
+## How Materiality is Determined
+ISA 320: assessing materiality is a matter of professional judgement; no uniform quantitative threshold is mandated, but benchmarks are permitted.
+
+Common single-rule benchmarks:
+- 5% of pre-tax income
+- 0.5% of total assets
+- 1% of equity
+- 1% of total revenue
+
+Discussion Paper 6 (1984) ranges:
+- 0.5%–1% of gross revenue
+- 1%–2% of total assets
+- 5%–10% of net profit
+
+Advanced methods use concave/"gauge" functions giving decreasing tolerance (lower %) for larger companies.
+
+## Performance Materiality
+ISA 320 requires performance materiality — an amount below overall materiality applied to particular transactions/accounts — to reduce the risk that aggregate uncorrected misstatements become material.
+
+## Role Under ISA 320
+Applied throughout planning and execution. Inverse relationship between audit risk and materiality: higher risk → lower materiality threshold. Materiality has quantitative (monetary) and qualitative dimensions (e.g. omitted disclosures can be material regardless of amount).

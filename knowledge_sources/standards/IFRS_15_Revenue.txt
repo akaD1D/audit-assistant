@@ -1,0 +1,26 @@
+IFRS 15 — Revenue from Contracts with Customers
+Source: Wikipedia (CC BY-SA), summary for reference/education.
+
+## Overview
+IFRS 15 is an International Financial Reporting Standard developed by the IASB with the FASB. It provides unified guidance on recognizing revenue from customer contracts. Adopted in 2014; effective January 2018.
+
+## Development History
+Emerged from a decade-long IASB/FASB convergence project begun in 2002 due to inconsistencies between the boards' revenue definitions. Discussion paper 2008; exposure drafts 2010 and 2011; final standard issued 28 May 2014.
+
+## The Five-Step Revenue Model
+1. Identify the contract — Both parties approve and commit to performance, with identifiable rights, obligations, and payment terms demonstrating "commercial substance." Simple retail transactions qualify.
+2. Identify performance obligations — Goods/services are distinct performance obligations if usable independently and separately identifiable from other contract elements.
+3. Determine transaction price — Generally stipulated in contracts. Variable consideration uses the most likely amount or expected value method. Non-cash consideration measured at fair value.
+4. Allocate price to obligations — Transaction price distributed across identified performance obligations.
+5. Recognize revenue upon fulfillment — Recognized when the customer receives all benefits associated with the performance obligation.
+
+## Key Recognition Principles
+Significant Financing Components: When payment timing provides substantial financing, transaction price adjusts using present/future value, with differences recognized as interest income or expense.
+Performance Over Time: When obligations settle gradually, revenue follows input methods (manufactured goods) or output methods, measuring progress toward completion.
+Contract Assets: Introduced for accrued revenue when customer payment is conditional beyond the passage of time — distinct from typical trade receivables.
+
+## Implementation Impact
+May cause revenue recognition earlier in some cases and later in others compared to previous guidance, depending on contract structures and industry practices.
+
+## Effective Date
+Effective for annual reporting periods beginning on or after 1 January 2018; early adoption permitted. FASB's parallel ASC 606 became effective for public entities after 15 December 2017.

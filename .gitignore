@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Env / secrets
+.env
+.streamlit/secrets.toml
+
+# App data (runtime — never commit uploads, db, vector store)
+data/
+!data/.gitkeep
+
+# Downloaded report PDFs (large binaries; re-fetch via scripts/download_sources.py)
+knowledge_sources/reports/
+
+# OS
+Thumbs.db
+.DS_Store

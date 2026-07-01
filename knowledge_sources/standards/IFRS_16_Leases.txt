@@ -1,0 +1,22 @@
+IFRS 16 — Leases
+Source: Wikipedia (CC BY-SA), summary for reference/education.
+
+## Objective and Scope
+IFRS 16 provides guidance on accounting for leases. Published January 2016; effective 1 January 2019, replacing IAS 17.
+
+## Motivation
+Modernizes lease accounting, ending guesswork in calculating lease obligations and providing transparency on lease assets and liabilities. A key driver was eliminating off-balance-sheet financing.
+
+## Lessee Accounting
+Lessees recognize two elements for substantially all leases (bringing them on-balance-sheet):
+- Right-of-Use Asset: the lessee's right to use the leased property.
+- Lease Liability: the obligation to make lease payments.
+
+## Lessor Accounting
+Carries forward IAS 17 requirements: lessors continue to classify leases as operating or finance leases.
+
+## Transition
+Permits a modified retrospective approach (comparatives unchanged; cumulative effect as an opening equity adjustment) rather than full retrospective restatement.
+
+## US GAAP Convergence
+Developed with the FASB, but IFRS 16 eliminates the lessee operating/finance classification — a distinction retained under US GAAP ASC 842.

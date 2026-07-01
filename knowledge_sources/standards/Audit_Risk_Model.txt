@@ -1,0 +1,14 @@
+Audit Risk and the Audit Risk Model (ISA 200)
+Source: Wikipedia (CC BY-SA), summary for reference/education.
+
+## Definition
+Audit risk (residual risk) is the risk that the auditor expresses an inappropriate opinion when the financial statements are materially misstated.
+
+## The Three Components
+Inherent Risk (IR): susceptibility of an assertion to misstatement before considering controls, due to the nature of the business/transaction (e.g. cash transactions carry higher inherent risk than settlement by cheque).
+Control Risk (CR): the risk that a misstatement is not prevented or detected by internal controls (e.g. weak segregation of duties increases CR).
+Detection Risk (DR): the risk that the auditor's procedures fail to detect a material misstatement, from sampling or non-sampling error.
+
+## The Audit Risk Model
+AR = IR × CR × DR
+Audit risk compounds when component risks are elevated; reducing any factor reduces total audit risk. Auditors set acceptable detection risk (and thus the extent of substantive testing) given assessed IR and CR to achieve a target audit risk.
