@@ -11,15 +11,22 @@ import httpx
 from audit_assistant.core.exceptions import LLMError
 from audit_assistant.domain.models import Message, Role
 
-_TIMEOUT = 120.0
+_TIMEOUT = 300.0  # local models can be slow to load on first call
 
 
 class OllamaProvider:
     """Implements LLMProvider against a local Ollama server."""
 
-    def __init__(self, base_url: str = "http://localhost:11434", model: str = "llama3.1") -> None:
+    def __init__(
+        self,
+        base_url: str = "http://localhost:11434",
+        model: str = "llama3.1",
+        num_ctx: int = 8192,
+    ) -> None:
         self._base_url = base_url.rstrip("/")
         self._model_name = model
+        # Ollama defaults to a 2048-token context, which truncates RAG prompts.
+        self._options = {"num_ctx": num_ctx}
 
     @property
     def name(self) -> str:
@@ -43,6 +50,7 @@ class OllamaProvider:
             "model": self._model_name,
             "messages": self._to_messages(messages, system),
             "stream": False,
+            "options": self._options,
         }
         try:
             resp = httpx.post(f"{self._base_url}/api/chat", json=payload, timeout=_TIMEOUT)
@@ -56,6 +64,7 @@ class OllamaProvider:
             "model": self._model_name,
             "messages": self._to_messages(messages, system),
             "stream": True,
+            "options": self._options,
         }
         try:
             with httpx.stream(
@@ -86,6 +95,7 @@ class OllamaProvider:
                 }
             ],
             "stream": False,
+            "options": self._options,
         }
         try:
             resp = httpx.post(f"{self._base_url}/api/chat", json=payload, timeout=_TIMEOUT)
