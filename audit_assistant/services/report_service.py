@@ -21,26 +21,39 @@ log = get_logger(__name__)
 
 # report_type -> (retrieval query, section outline)
 REPORT_TYPES: dict[str, tuple[str, list[str]]] = {
-    "Executive summary": (
+    "Executive Summary": (
         "key figures, financial highlights, overall conclusions",
         ["Overview", "Key Figures", "Conclusions"],
     ),
-    "Audit summary": (
-        "audit scope, procedures performed, findings, conclusions",
-        ["Scope & Objectives", "Procedures Performed", "Findings", "Conclusion"],
+    "Audit Report": (
+        "audit scope, procedures performed, findings, opinion",
+        ["Scope & Objectives", "Procedures Performed", "Findings", "Opinion"],
     ),
-    "Risk report": (
+    "Financial Analysis": (
+        "revenue, profitability, ratios, trends, liquidity, financial position",
+        ["Financial Highlights", "Ratio Analysis", "Trends", "Assessment"],
+    ),
+    "Risk Assessment": (
         "risks, internal controls, materiality, fraud indicators",
         ["Risk Overview", "Key Risks", "Control Environment", "Recommendations"],
     ),
-    "Findings & recommendations": (
-        "issues, exceptions, misstatements, control weaknesses",
-        ["Findings", "Impact", "Recommendations"],
+    "Fraud Detection Report": (
+        "fraud indicators, anomalies, unusual or unauthorised transactions, red flags",
+        ["Fraud Risk Indicators", "Anomalies Detected", "Red Flags", "Recommended Actions"],
     ),
-    "Observations report": (
-        "observations, notable items, follow-up matters",
-        ["Observations", "Analysis", "Follow-up Actions"],
+    "Internal Control Assessment": (
+        "internal controls, COSO components, segregation of duties, control deficiencies",
+        ["Control Environment", "Control Activities", "Deficiencies", "Recommendations"],
     ),
+    "Management Letter": (
+        "control weaknesses, observations, recommendations to management",
+        ["Introduction", "Observations", "Recommendations", "Management Response"],
+    ),
+    "Compliance Report": (
+        "compliance with IFRS/IAS/ISA and regulatory requirements, non-compliance",
+        ["Compliance Scope", "Findings", "Non-compliance Issues", "Remediation"],
+    ),
+    "Custom Report": ("summary key figures findings", ["Summary"]),
 }
 
 
@@ -59,9 +72,14 @@ class ReportService:
         title: str | None = None,
         document_ids: list[str] | None = None,
         language: str = "English",
+        retriever=None,
+        custom_instructions: str | None = None,
     ) -> Report:
         query, outline = REPORT_TYPES.get(report_type, ("summary", ["Summary"]))
-        contexts = self._rag.retrieve(query, top_k=self._top_k, document_ids=document_ids)
+        if custom_instructions:
+            query = custom_instructions
+        source = retriever or self._rag
+        contexts = source.retrieve(query, top_k=self._top_k, document_ids=document_ids)
 
         source_block = "\n\n".join(
             f"[Source {i}] {rc.chunk.filename}"
@@ -78,10 +96,14 @@ class ReportService:
             if language.lower() != "english"
             else "Write the report in English."
         )
+        custom_note = (
+            f"\nThe user asked specifically for: {custom_instructions}\n" if custom_instructions else ""
+        )
         prompt = (
             f"Write a professional **{report_type}** for an auditor, using ONLY the context "
             f"below. Ground every figure and statement in the sources and cite them as "
-            f"[Source N]. If the context lacks something, say so rather than inventing it.\n\n"
+            f"[Source N]. If the context lacks something, say so rather than inventing it.\n"
+            f"{custom_note}\n"
             f"{lang_note}\n\n"
             f"Use these section topics as Markdown '## ' headings:\n{outline_text}\n\n"
             f"CONTEXT:\n{source_block}"

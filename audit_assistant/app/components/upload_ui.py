@@ -1,8 +1,8 @@
-"""Upload + document-preview UI component.
+"""Upload + document management UI.
 
-Streamlit reruns the whole script on every interaction, so we deduplicate by a
-content hash to avoid re-ingesting the same file repeatedly. Parsed documents
-are cached in ``st.session_state['documents']`` for the session.
+Uploads default to **session documents** (temporary, in-memory, never indexed
+permanently). The user must explicitly choose "Add to Knowledge Base" to persist
+a document. Processing is shown as staged progress.
 """
 
 from __future__ import annotations
@@ -17,80 +17,128 @@ from audit_assistant.core.exceptions import (
     UnsupportedFileTypeError,
 )
 from audit_assistant.core.logging import get_logger
-from audit_assistant.domain.models import ParsedDocument
 
 log = get_logger(__name__)
 
 _ACCEPTED = ["pdf", "xlsx", "xls", "csv", "docx", "txt", "png", "jpg", "jpeg"]
+SESSION = "🗂️ This session only"
+KB = "📚 Add to Knowledge Base"
 
 
 def _digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _process_file(container, *, name: str, data: bytes, to_kb: bool) -> None:
+    """Run the staged ingestion pipeline for one file into the chosen target."""
+    ingestion = container.ingestion_service
+    with st.status(f"Processing **{name}**…", expanded=True) as status:
+        try:
+            status.write("📤 Uploading…")
+            file_type = ingestion.validate(filename=name, data=data)
+
+            status.write("📄 Extracting text & tables…")
+            document = ingestion.parse(filename=name, data=data, file_type=file_type)
+
+            if ingestion.is_image(file_type):
+                status.write("🔍 Reading image (OCR / vision)…")
+                ingestion.transcribe_image(document, data)
+
+            status.write("🧠 Creating embeddings…")
+            chunks, embeddings = ingestion.embed(document)
+
+            if to_kb:
+                status.write("🗄️ Indexing into knowledge base…")
+                ingestion.persist_to_kb(document, data, chunks, embeddings)
+                container.audit_log.record("kb_add", f"{name} ({document.page_count}p)")
+                target = "Knowledge Base"
+            else:
+                status.write("🗂️ Adding to this session…")
+                st.session_state["session_index"].add(chunks, embeddings)
+                st.session_state["session_docs"][document.document_id] = document
+                container.audit_log.record("session_upload", name)
+                target = "session"
+
+            status.update(
+                label=f"✅ {document.filename} → {target} — "
+                f"{document.page_count} page(s), {len(chunks)} chunk(s)",
+                state="complete",
+            )
+        except (FileValidationError, UnsupportedFileTypeError, ParsingError) as exc:
+            status.update(label=f"❌ {name}: {exc}", state="error")
+        except Exception as exc:  # noqa: BLE001 - never crash the UI
+            log.exception("Ingestion failed for %s", name)
+            status.update(label=f"❌ {name}: unexpected error ({exc})", state="error")
+
+
 def render_uploader(container) -> None:
-    """Render the sidebar uploader and ingest new files into the session."""
-    ingested: dict[str, ParsedDocument] = st.session_state.setdefault("documents", {})
-    hashes: set[str] = st.session_state.setdefault("doc_hashes", set())
+    processed: set[str] = st.session_state.setdefault("processed_hashes", set())
+
+    destination = st.radio(
+        "How would you like to use uploaded files?",
+        [SESSION, KB],
+        key="upload_destination",
+        help="Session documents are temporary (this chat only). Knowledge Base "
+        "documents are saved permanently and searchable in future sessions.",
+    )
+    to_kb = destination == KB
 
     files = st.file_uploader(
-        "Upload audit files",
+        "Upload files",
         type=_ACCEPTED,
         accept_multiple_files=True,
-        help="PDF, Excel, CSV, Word, images, and text. Max "
-        f"{container.settings.max_upload_mb} MB each.",
+        help=f"PDF, Excel, CSV, Word, images, text. Max {container.settings.max_upload_mb} MB each.",
     )
 
     for upload in files or []:
         data = upload.getvalue()
-        digest = _digest(data)
-        if digest in hashes:
-            continue  # already ingested this exact file this session
+        marker = f"{_digest(data)}:{destination}"
+        if marker in processed:
+            continue
+        _process_file(container, name=upload.name, data=data, to_kb=to_kb)
+        processed.add(marker)
 
-        size_mb = len(data) / (1024 * 1024)
-        with st.status(
-            f"Processing **{upload.name}** ({size_mb:.1f} MB) — parsing and building "
-            "the search index. Large reports can take up to a minute…",
-            expanded=False,
-        ) as status:
-            try:
-                doc = container.ingestion_service.ingest(filename=upload.name, data=data)
-            except (FileValidationError, UnsupportedFileTypeError, ParsingError) as exc:
-                status.update(label=f"❌ {upload.name}: {exc}", state="error")
-                continue
-            except Exception as exc:  # noqa: BLE001 - defensive: never crash the UI
-                log.exception("Unexpected ingestion error for %s", upload.name)
-                status.update(label=f"❌ {upload.name}: unexpected error ({exc}).", state="error")
-                continue
 
-            ingested[doc.document_id] = doc
-            hashes.add(digest)
-            container.audit_log.record("document_uploaded", f"{doc.filename} ({doc.page_count} pages)")
-            chunks = doc.metadata.get("chunks", "?")
-            status.update(
-                label=f"✅ {doc.filename} — {doc.page_count} page(s), {chunks} chunks indexed",
-                state="complete",
-            )
+def render_session_docs(container) -> None:
+    docs = st.session_state.get("session_docs", {})
+    st.caption(f"{len(docs)} temporary document(s) — cleared when you close the app.")
+    for doc_id, doc in list(docs.items()):
+        col1, col2 = st.columns([5, 1])
+        col1.write(f"📄 {doc.filename}")
+        if col2.button("🗑️", key=f"rm_sess_{doc_id}", help="Remove from session"):
+            st.session_state["session_index"].remove_document(doc_id)
+            docs.pop(doc_id, None)
+            st.rerun()
 
-    st.caption(f"{len(ingested)} document(s) in this session.")
+
+def render_kb_summary(container) -> None:
+    count = container.kb_service.count()
+    st.caption(f"{count} document(s) saved permanently.")
+    st.caption("Manage them in the **📚 Knowledge Base** tab.")
+
+
+def render_recent_reports() -> None:
+    reports = st.session_state.get("recent_reports", [])
+    if not reports:
+        st.caption("No reports generated yet.")
+        return
+    for r in reports[-5:][::-1]:
+        st.write(f"📄 {r}")
 
 
 def render_document_list() -> None:
-    """Render an expandable preview of every ingested document."""
-    documents: dict[str, ParsedDocument] = st.session_state.get("documents", {})
+    """Session document previews (for the Documents tab)."""
+    documents = st.session_state.get("session_docs", {})
     if not documents:
-        st.info("Upload documents from the sidebar to get started.")
+        st.info("No session documents. Upload files from the sidebar to analyse them here.")
         return
-
-    st.subheader("📑 Ingested documents")
+    st.subheader("🗂️ Session documents")
     for doc in documents.values():
-        with st.expander(f"{doc.filename}  ·  {doc.file_type.value.upper()}  ·  {doc.page_count} page(s)"):
+        with st.expander(f"{doc.filename} · {doc.file_type.value.upper()} · {doc.page_count} page(s)"):
             if doc.metadata:
                 st.caption(" | ".join(f"{k}: {v}" for k, v in doc.metadata.items()))
             for page in doc.pages:
-                st.markdown(f"**Page {page.number}**")
                 if page.text:
-                    preview = page.text[:2000]
-                    st.text(preview + ("…" if len(page.text) > 2000 else ""))
+                    st.text(page.text[:1500] + ("…" if len(page.text) > 1500 else ""))
                 for table in page.tables:
                     st.markdown(table.to_markdown())

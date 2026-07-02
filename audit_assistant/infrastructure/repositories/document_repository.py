@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
+from pathlib import Path
 
 from audit_assistant.core.logging import get_logger
 from audit_assistant.domain.models import (
@@ -116,6 +117,53 @@ class SqliteDocumentRepository:
         with self._db.connect() as conn:
             rows = conn.execute("SELECT DISTINCT filename FROM documents").fetchall()
         return {r["filename"] for r in rows}
+
+    def list_summaries(self) -> list[dict]:
+        """Lightweight metadata rows for the knowledge-base management UI."""
+        import json as _json
+
+        with self._db.connect() as conn:
+            rows = conn.execute(
+                "SELECT document_id, filename, file_type, page_count, created_at, "
+                "file_path, metadata_json FROM documents ORDER BY created_at DESC"
+            ).fetchall()
+        out: list[dict] = []
+        for r in rows:
+            meta = _json.loads(r["metadata_json"] or "{}")
+            size = None
+            if r["file_path"]:
+                try:
+                    size = Path(r["file_path"]).stat().st_size
+                except OSError:
+                    size = None
+            out.append(
+                {
+                    "document_id": r["document_id"],
+                    "filename": r["filename"],
+                    "file_type": r["file_type"],
+                    "pages": r["page_count"],
+                    "created_at": r["created_at"],
+                    "size_bytes": size,
+                    "chunks": int(meta["chunks"]) if str(meta.get("chunks", "")).isdigit() else None,
+                    "metadata": meta,
+                }
+            )
+        return out
+
+    def rename(self, document_id: str, new_filename: str) -> None:
+        with self._db.connect() as conn:
+            conn.execute(
+                "UPDATE documents SET filename = ? WHERE document_id = ?",
+                (new_filename, document_id),
+            )
+        log.info("Renamed document %s -> %s", document_id, new_filename)
+
+    def file_path(self, document_id: str) -> str | None:
+        with self._db.connect() as conn:
+            row = conn.execute(
+                "SELECT file_path FROM documents WHERE document_id = ?", (document_id,)
+            ).fetchone()
+        return row["file_path"] if row else None
 
     def delete(self, document_id: str) -> None:
         with self._db.connect() as conn:

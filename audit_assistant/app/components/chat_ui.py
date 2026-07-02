@@ -61,20 +61,20 @@ def _render_welcome() -> None:
 def render_chat(container) -> None:
     st.subheader("💬 Ask the audit assistant")
 
-    kb_count = container.document_repository.count()
-    # If the user has uploaded something this session, focus on it by default —
-    # otherwise a fresh invoice gets drowned out by the whole knowledge base.
-    default_index = 1 if st.session_state.get("documents") else 0
+    kb_count = container.kb_service.count()
+    sess_count = len(st.session_state.get("session_docs", {}))
+    # Focus on session uploads by default when they exist.
+    default_index = 0 if sess_count else 1
     scope = st.radio(
         "Answer from",
-        ["📚 Entire knowledge base", "📎 Only this session's uploads"],
+        ["🗂️ Session documents", "📚 Knowledge base"],
         index=default_index,
         horizontal=True,
         key="chat_scope",
-        help="Uploaded a file to ask about? Use 'this session's uploads' so the answer "
-        "comes from it, not the whole library.",
+        help="Session documents = files you uploaded this chat. Knowledge base = "
+        "documents you saved permanently.",
     )
-    st.caption(f"📚 Knowledge base: {kb_count} document(s) indexed.")
+    st.caption(f"🗂️ {sess_count} session doc(s)  ·  📚 {kb_count} in knowledge base")
 
     # Welcome / empty state with clickable suggestions.
     if not st.session_state["messages"]:
@@ -101,9 +101,8 @@ def render_chat(container) -> None:
 
     if not container.is_llm_ready:
         warning = (
-            "⚠️ **No LLM provider configured.** Add a free Gemini key to `.env` "
-            "(`AUDIT_GEMINI_API_KEY=...`) from https://aistudio.google.com/app/apikey, "
-            "then restart. Meanwhile, the **🔍 Search** box above works with no key."
+            "⚠️ **No AI model available.** Start Ollama (or add a Gemini key to `.env`) "
+            "to enable chat. Document upload and the Calculator work without it."
         )
         st.session_state["messages"].append({"role": "assistant", "content": warning})
         with st.chat_message("assistant"):
@@ -111,15 +110,17 @@ def render_chat(container) -> None:
         return
 
     history = _history_as_messages()[:-1]  # exclude the just-added user turn
-    if scope.startswith("📎"):
-        doc_ids = list(st.session_state.get("documents", {}).keys()) or None
+    if scope.startswith("🗂️"):
+        from audit_assistant.services.session_store import SessionRetriever
+
+        retriever = SessionRetriever(container.embedding_provider, st.session_state["session_index"])
     else:
-        doc_ids = None  # search the entire persistent knowledge base
+        retriever = None  # None -> KB (Qdrant) via the default rag_service
 
     with st.chat_message("assistant"):
         try:
             stream, citations = container.chat_service.stream_answer(
-                prompt, history=history, document_ids=doc_ids
+                prompt, history=history, retriever=retriever
             )
             full_text = st.write_stream(stream)
             confidence = container.chat_service.confidence_of(full_text)

@@ -136,6 +136,18 @@ class Container:
             max_upload_bytes=self.settings.max_upload_bytes,
             indexer=self.indexing_service,
             image_analyzer=self.image_service,
+            chunk_size=self.settings.chunk_size,
+            chunk_overlap=self.settings.chunk_overlap,
+        )
+
+    @cached_property
+    def kb_service(self):
+        from audit_assistant.services.knowledge_base_service import KnowledgeBaseService
+
+        return KnowledgeBaseService(
+            repository=self.document_repository,
+            indexer=self.indexing_service,
+            ingestion=self.ingestion_service,
         )
 
     # --- Phase 3: LLM + chat --------------------------------------------------

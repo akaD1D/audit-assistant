@@ -24,16 +24,26 @@ import streamlit as st
 from audit_assistant.app.components.analysis_ui import render_analysis
 from audit_assistant.app.components.calc_ui import render_calculator
 from audit_assistant.app.components.chat_ui import render_chat
+from audit_assistant.app.components.kb_ui import render_knowledge_base
 from audit_assistant.app.components.report_ui import render_reports
-from audit_assistant.app.components.search_ui import render_search
-from audit_assistant.app.components.upload_ui import render_document_list, render_uploader
+from audit_assistant.app.components.upload_ui import (
+    render_document_list,
+    render_kb_summary,
+    render_recent_reports,
+    render_session_docs,
+    render_uploader,
+)
 from audit_assistant.app.theme import apply_theme, render_header
 from audit_assistant.core.container import get_container
+from audit_assistant.services.session_store import SessionIndex
 
 
 def _init_session() -> None:
     st.session_state.setdefault("messages", [])
-    st.session_state.setdefault("documents", {})  # document_id -> ParsedDocument
+    st.session_state.setdefault("session_docs", {})  # document_id -> ParsedDocument
+    st.session_state.setdefault("recent_reports", [])
+    if "session_index" not in st.session_state:
+        st.session_state["session_index"] = SessionIndex()
 
 
 def render_sidebar(container) -> None:
@@ -46,42 +56,49 @@ def render_sidebar(container) -> None:
             st.rerun()
 
         st.divider()
-        st.subheader("📁 Documents")
+        st.subheader("⬆️ Upload")
         render_uploader(container)
 
         st.divider()
-        st.subheader("⚙️ Status")
+        st.subheader("🗂️ Session Documents")
+        render_session_docs(container)
+
+        st.divider()
+        st.subheader("📚 Knowledge Base")
+        render_kb_summary(container)
+
+        st.divider()
+        st.subheader("📄 Recent Reports")
+        render_recent_reports()
+
+        st.divider()
         s = container.settings
         col1, col2 = st.columns(2)
-        col1.metric("Provider", s.llm_provider)
-        col2.metric("Embeddings", s.embedding_backend)
-        if container.is_llm_ready:
-            st.success("LLM provider configured.")
-        else:
-            st.warning("No LLM key — add one in `.env` to enable chat.")
-        st.caption("🌗 Tip: switch light/dark via the ☰ menu → Settings → Theme.")
+        col1.metric("Model", s.ollama_model if s.llm_provider == "ollama" else s.llm_provider)
+        col2.metric("Status", "🟢 Ready" if container.is_llm_ready else "🟡 Off")
+        st.caption("🌗 Light/dark: ☰ menu → Settings → Theme.")
 
 
 def render_main(container) -> None:
     render_header(
-        kb_count=container.document_repository.count(),
+        kb_count=container.kb_service.count(),
         provider=container.settings.llm_provider,
         llm_ready=container.is_llm_ready,
     )
 
-    tab_chat, tab_search, tab_calc, tab_analysis, tab_reports, tab_docs = st.tabs(
-        ["💬 Chat", "🔍 Search", "🧮 Calculator", "📊 Analysis", "📄 Reports", "📑 Documents"]
+    tab_chat, tab_calc, tab_analysis, tab_reports, tab_kb, tab_docs = st.tabs(
+        ["💬 Chat", "🧮 Calculator", "📊 Analysis", "📄 Reports", "📚 Knowledge Base", "📑 Documents"]
     )
     with tab_chat:
         render_chat(container)
-    with tab_search:
-        render_search(container)
     with tab_calc:
         render_calculator(container)
     with tab_analysis:
         render_analysis(container)
     with tab_reports:
         render_reports(container)
+    with tab_kb:
+        render_knowledge_base(container)
     with tab_docs:
         render_document_list()
         with st.expander("🧾 Activity log"):

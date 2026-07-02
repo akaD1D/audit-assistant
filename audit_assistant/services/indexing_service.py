@@ -31,6 +31,14 @@ class IndexingService:
         self._chunk_size = chunk_size
         self._chunk_overlap = chunk_overlap
 
+    @property
+    def embedder(self) -> EmbeddingProvider:
+        return self._embedder
+
+    @property
+    def vector_store(self) -> VectorStore:
+        return self._vector_store
+
     def index(self, document: ParsedDocument) -> int:
         """Chunk, embed, and store a document. Returns the chunk count."""
         chunks = chunk_document(document, self._chunk_size, self._chunk_overlap)

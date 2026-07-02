@@ -46,8 +46,9 @@ class ChatService:
         messages.append(Message(role=Role.USER, content=grounded_prompt))
         return messages
 
-    def _retrieve(self, question: str, top_k: int | None, document_ids: list[str] | None):
-        return self._rag.retrieve(
+    def _retrieve(self, question, top_k, document_ids, retriever):
+        source = retriever or self._rag
+        return source.retrieve(
             question, top_k=top_k or self._default_top_k, document_ids=document_ids
         )
 
@@ -74,9 +75,10 @@ class ChatService:
         history: list[Message] | None = None,
         document_ids: list[str] | None = None,
         top_k: int | None = None,
+        retriever=None,
     ) -> Answer:
         """Return a complete grounded answer (non-streaming)."""
-        contexts = self._retrieve(question, top_k, document_ids)
+        contexts = self._retrieve(question, top_k, document_ids, retriever)
         prompt = build_grounded_prompt(question, contexts)
         messages = self._assemble(history, prompt)
         text = self._llm.complete(messages, system=self._system_prompt)
@@ -92,13 +94,14 @@ class ChatService:
         history: list[Message] | None = None,
         document_ids: list[str] | None = None,
         top_k: int | None = None,
+        retriever=None,
     ) -> tuple[Iterator[str], list[Citation]]:
         """Return a token stream plus the citations for the retrieved context.
 
         The UI streams the tokens, then renders the citations underneath. Final
         confidence can be derived from the assembled text via :meth:`confidence_of`.
         """
-        contexts = self._retrieve(question, top_k, document_ids)
+        contexts = self._retrieve(question, top_k, document_ids, retriever)
         prompt = build_grounded_prompt(question, contexts)
         messages = self._assemble(history, prompt)
         stream = self._llm.stream(messages, system=self._system_prompt)
