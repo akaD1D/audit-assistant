@@ -79,7 +79,9 @@ def render_reports(container) -> None:
             f"Using: {'🗂️ session documents' if use_session else '📚 knowledge base'}"
         )
 
-    with st.expander("➕ Add another document"):
+    # NOTE: no st.expander here — the staged st.status is itself an expander,
+    # and Streamlit forbids nesting expanders.
+    if st.checkbox("➕ Add another document"):
         _upload_for_report(container, key="report_upload_more")
 
     # --- Step 3: report type -------------------------------------------------
