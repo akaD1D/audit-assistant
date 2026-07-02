@@ -58,7 +58,37 @@ LLM. See `../.claude/plans/*.md` for the full roadmap.
 
 Only the **chat** step needs a provider key; parsing + retrieval run offline.
 
-## Setup
+## 📦 Install on Windows (easiest — no coding needed)
+
+Download the installer and run it — the app sets itself up and runs **100%
+offline and free** on your PC (no accounts, no API keys, no quotas).
+
+**Steps:**
+
+1. Go to **[Releases](https://github.com/akaD1D/audit-assistant/releases)** and
+   download `AuditAssistant-Setup-x.x.x.exe`.
+2. Double-click it.
+   - If Windows shows a blue **"Windows protected your PC"** screen, click
+     **More info → Run anyway** (the installer is new/unsigned — this is normal).
+3. Click through the wizard and keep **"Run first-time setup now"** ticked on
+   the last page.
+4. A setup window opens and installs everything automatically:
+   - Python 3.12 (if you don't have it)
+   - The app's Python packages
+   - **Ollama** — the engine that runs the AI locally on your PC
+   - The AI models (**~10 GB download** — text + invoice-reading vision model)
+   - Pre-loads the Knowledge Base with IFRS/IAS/ISA/COSO/SOX reference summaries
+5. When it says **Setup complete**, double-click **AI Audit Assistant** on your
+   desktop. Your browser opens with the app. Done. 🎉
+
+**Requirements:** Windows 10/11 · 16 GB RAM recommended · ~15 GB free disk ·
+internet needed **only during setup** (afterwards it runs fully offline).
+
+> 💡 Prefer the cloud AI instead of local? After installing, edit the `.env`
+> file in `%LOCALAPPDATA%\AuditAssistant` and set `AUDIT_LLM_PROVIDER=gemini`
+> plus your free Gemini API key.
+
+## Setup (developers)
 
 ```powershell
 # 1. Create the virtual environment (Python 3.12)

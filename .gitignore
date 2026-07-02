@@ -21,6 +21,9 @@ data/
 # Downloaded report PDFs (large binaries; re-fetch via scripts/download_sources.py)
 knowledge_sources/reports/
 
+# Installer build output
+packaging/Output/
+
 # OS
 Thumbs.db
 .DS_Store
